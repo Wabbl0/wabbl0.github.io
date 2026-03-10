@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONTACT</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <div class="scanlines"></div>
+    <nav class="title-nav">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="credits.html">Credits</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+    <main>
+        <h1>CONTACT</h1>
+        <h2>Get in touch</h2>
+
+        <div class="content-flex-container">
+            <div class="content-box" id="contact-box">
+                <h3>Get in Touch</h3>
+                <ul>
+                    <li>Email ✉: <a href="mailto:valtteri.vine@gmail.com" style="color: white;">valtteri.vine@gmail.com</a></li>
+                    <li>Phone ☎: <a href="tel:+358442038941" style="color: white;">+358442038941</a></li>
+                    <li>Website ⛓: <a href="https://vinet0.com" target="_blank" style="color: white;">vinet0.com</a></li>
+                </ul>
+            </div>
+
+            <div class="content-box" id="comment-box">
+                <h3>Leave a Comment</h3>
+                <form class="comment-form" action="mailto:valtteri.vine@gmail.com" method="post" enctype="text/plain">
+                    <label for="comment-message">Comment sent through Email</label>
+                    <textarea id="comment-message" name="comment" rows="4" required></textarea>
+
+                    <button type="submit" class="comment-submit">Send Comment</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <div class="filmstrip-container">
+        <div class="filmstrip-track" id="filmstrip-track"></div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="image-modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <img id="modalImage" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" class="modal-image">
+            <p id="modalCaption" class="modal-caption"></p>
+        </div>
+    </div>
+
+    <script>
+        const filmstripImages = [
+            'backyard.png',
+            'cafeteria.png',
+            'cafeteria_table.png',
+            'cigarette.png',
+            'classroom.png',
+            'corridor.png',
+            'creator.png',
+            'google_map.png',
+            'hub.png',
+            'kitchen.png',
+            'map.png',
+            'school.png',
+            'title_v1.png',
+            'title_v2.png',
+            'title_v3.png'
+        ];
+
+        const humanizeFilename = (fileName) =>
+            fileName
+                .replace(/\.[^.]+$/, '')
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, (char) => char.toUpperCase());
+
+        const track = document.getElementById('filmstrip-track');
+
+        const buildFilmstripImage = (fileName) => {
+            const image = document.createElement('img');
+            const caption = humanizeFilename(fileName);
+            image.src = `pictures/${fileName}`;
+            image.alt = caption;
+            image.className = 'filmstrip-image';
+            image.dataset.caption = caption;
+            image.style.cursor = 'pointer';
+            return image;
+        };
+
+        const appendFilmstripSet = () => {
+            filmstripImages.forEach((fileName) => {
+                track.appendChild(buildFilmstripImage(fileName));
+            });
+        };
+
+        const preloadFilmstripImages = () => Promise.all(
+            filmstripImages.map((fileName) => new Promise((resolve) => {
+                const image = new Image();
+                image.onload = resolve;
+                image.onerror = resolve;
+                image.src = `pictures/${fileName}`;
+            }))
+        );
+
+        const renderFilmstrip = () => {
+            track.innerHTML = '';
+            appendFilmstripSet();
+
+            const singleSetWidth = track.scrollWidth;
+            if (!singleSetWidth) return;
+
+            const minimumTotalWidth = window.innerWidth + singleSetWidth;
+            const repeatCount = Math.max(2, Math.ceil(minimumTotalWidth / singleSetWidth));
+
+            for (let repeatIndex = 1; repeatIndex < repeatCount; repeatIndex++) {
+                appendFilmstripSet();
+            }
+
+            track.style.setProperty('--filmstrip-loop-width', `${singleSetWidth}px`);
+        };
+
+        preloadFilmstripImages().then(renderFilmstrip);
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(renderFilmstrip, 120);
+        });
+
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+
+        track.addEventListener('click', (event) => {
+            if (!(event.target instanceof HTMLImageElement)) return;
+            if (!event.target.classList.contains('filmstrip-image')) return;
+
+            modalImage.src = event.target.src;
+            modalCaption.textContent = event.target.dataset.caption || '';
+            modal.style.display = 'flex';
+        });
+
+        document.querySelector('.modal-close').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
