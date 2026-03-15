@@ -13,10 +13,13 @@
 <body>
     <div class="scanlines"></div>
     <nav class="title-nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="credits.html">Credits</a>
-        <a href="contact.html">Contact</a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="credits.html">Credits</a>
+            <a href="contact.html">Contact</a>
+        </div>
     </nav>
     <main>
         <h1>CONTACT</h1>
@@ -37,7 +40,6 @@
                 <form class="comment-form" action="mailto:valtteri.vine@gmail.com" method="post" enctype="text/plain">
                     <label for="comment-message">Comment sent through Email</label>
                     <textarea id="comment-message" name="comment" rows="4" required></textarea>
-
                     <button type="submit" class="comment-submit">Send Comment</button>
                 </form>
             </div>
@@ -48,7 +50,6 @@
         <div class="filmstrip-track" id="filmstrip-track"></div>
     </div>
 
-    <!-- Image Modal -->
     <div id="imageModal" class="image-modal" style="display: none;">
         <div class="modal-content">
             <span class="modal-close">&times;</span>
@@ -58,19 +59,42 @@
     </div>
 
     <script>
+        const nav = document.querySelector('.title-nav');
+        const navToggle = nav?.querySelector('.nav-toggle');
+        if (nav && navToggle) {
+            navToggle.addEventListener('click', () => {
+                const isOpen = nav.classList.toggle('nav-open');
+                navToggle.setAttribute('aria-expanded', String(isOpen));
+            });
+
+            nav.querySelectorAll('.nav-links a').forEach((link) => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('nav-open');
+                    navToggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+        }
+
         const filmstripImages = [
             'backyard.png',
+            'board.png',
             'cafeteria.png',
             'cafeteria_table.png',
             'cigarette.png',
             'classroom.png',
             'corridor.png',
             'creator.png',
+            'desk.png',
+            'desk_empty.jpg',
+            'desk_hand.png',
             'google_map.png',
             'hub.png',
             'kitchen.png',
+            'kitchen_no_flash.png',
             'map.png',
             'school.png',
+            'teacher_key.png',
+            'teacher_no_key.png',
             'title_v1.png',
             'title_v2.png',
             'title_v3.png'
@@ -130,6 +154,7 @@
         preloadFilmstripImages().then(renderFilmstrip);
 
         let resizeTimer;
+        // W3Schools reference: JavaScript event listeners https://www.w3schools.com/js/js_htmldom_eventlistener.asp
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(renderFilmstrip, 120);

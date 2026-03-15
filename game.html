@@ -15,9 +15,7 @@
 
     <div class="scanlines"></div>
 
-    <!-- GAME CONTAINER -->
     <div id="game-container" class="game-container">
-        <!-- STATUS BAR -->
         <div class="status-bar">
             <div>LOCATION: <span id="location-name" class="text-red-400">LOADING...</span></div>
             <div class="flex gap-4">
@@ -27,12 +25,9 @@
         </div>
         <button class="home-btn" onclick="window.location.href='index.html'" aria-label="Back to home">X</button>
 
-        <!-- SCENE AREA -->
         <div class="scene-area" id="scene-area">
-            <!-- Kuva -->
             <img id="scene-bg" class="scene-bg-image hidden" src="" alt="Scene Background">
 
-            <!-- Teksti -->
             <div id="story-box" class="story-box">
                 <p id="story-text" class="story-text">
                     Initializing system...
@@ -40,20 +35,15 @@
             </div>
         </div>
 
-        <!-- CONTROLS -->
         <div class="controls-area" id="controls-area">
-            <!-- Napit generoidaan tähän -->
         </div>
     </div>
 
-    <!-- PELILOGIIKKA -->
     <script>
-        // Start game automatically when page loads
         window.onload = function() {
             loadScene('start');
         };
 
-        // --- PELIN TILA ---
         const gameState = {
             inventory: [],
             memories: 0,
@@ -64,7 +54,7 @@
                 hasKey: false,
                 hasShovel: false,
                 deskSequencePlayed: false,
-                knowsName: false, // Onko nähnyt "Axel" nimen
+                knowsName: false,
                 isDead: false
             }
         };
@@ -94,7 +84,6 @@
             sceneFxTimers.push(timer);
         }
 
-        // --- APUFUNKTIOT ---
         function addToInventory(item, displayName) {
             if (!gameState.inventory.includes(displayName)) {
                 gameState.inventory.push(displayName);
@@ -109,7 +98,6 @@
         function addMemory() {
             gameState.memories++;
             updateUI();
-            // Visuaalinen efekti muistolle
             const textBox = document.getElementById('story-text');
             textBox.classList.add('glitch-text');
             setTimeout(() => textBox.classList.remove('glitch-text'), 1000);
@@ -185,14 +173,11 @@
                     { text: "Turn away", target: "ending_1" }
                 ]
             },
-
-            // HUB (LOCKER)
             "scene_3": {
                 name: "YOUR LOCKER",
                 text: "You are in your sanctuary. There's a picture of the two of you on the locker door. The map shows four circled locations. The basement entrance has been blacked out.",
                 image: "hub.png",
                 onEnter: () => {
-                     // first memory gained automatically in hub
                      addMemoryOnce("scene_3");
                 },
                 choices: [
@@ -200,11 +185,16 @@
                     { text: "Go to the classroom", target: "loc_classroom" },
                     { text: "Go to the backyard", target: "loc_yard" },
                     { text: "Go to the teacher's lounge", target: "loc_teachers" },
-                    { text: "ENTER THE BASEMENT", target: "basement_entry", specialClass: "text-red-600 border-red-600" }
+                    { text: "ENTER THE BASEMENT", target: "basement_blocked_temp", specialClass: "text-red-600 border-red-600" }
                 ]
             },
-
-            // --- CAFETERIA ---
+            "basement_blocked_temp": {
+                name: "BASEMENT",
+                text: "The basement is sealed off for now. Come back later.",
+                choices: [
+                    { text: "Go back", target: "scene_3" }
+                ]
+            },
             "loc_cafeteria": {
                 name: "CAFETERIA",
                 text: "Tables are overturned. The air reeks of rancid grease. In the middle of the hall you see a ghostly figure sitting alone at an intact table. The kitchen area is dark.",
@@ -242,8 +232,6 @@
                 },
                 choices: [{ text: "Nice", target: "loc_cafeteria" }]
             },
-
-            // --- BACKYARD ---
             "loc_yard": {
                 name: "BACKYARD",
                 text: "The corner at the back of the school. The wall has a weird graffiti on it. You still smell the teen rebelry around.",
@@ -307,8 +295,6 @@
                 },
                 choices: [{ text: "Nice", target: "loc_teachers" }]
             },
-
-            // --- CLASSROOM & PUZZLE ---
             "loc_classroom": {
                 name: "CLASSROOM",
                 text: "Dust dances in the beams of light. In the back row one desk sits apart from the others. A chalkboard stands at the front.",
@@ -348,12 +334,10 @@
                 },
                 choices: [{ text: "Take the name", target: "scene_3" }]
             },
-
-            // --- BASEMENT ---
             "basement_entry": {
                 name: "BASEMENT DOOR",
                 text: "A heavy metal door. The sign reads 'ENTRY FORBIDDEN'.",
-                image: "https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=1200",
+                image: "",
                 choices: [
                     { 
                         text: "Unlock with key", 
@@ -377,7 +361,6 @@
                     { text: "I'm not ready", target: "scene_3" }
                 ]
             },
-            // LOGIC: Check if flashlight exists
             "check_flashlight_logic": {
                 name: "...",
                 text: "...",
@@ -385,7 +368,7 @@
                     if (gameState.flags.hasFlashlight) {
                         loadScene("basement_main");
                     } else {
-                        loadScene("ending_2"); // Fall
+                        loadScene("ending_2");
                     }
                 }
             },
@@ -393,7 +376,7 @@
             "basement_main": {
                 name: "MAIN CHAMBER",
                 text: "The beam hits soft soil. In the corner something metallic glints. There is no going back.",
-                image: "https://images.unsplash.com/photo-1605722558200-b749556d1c99?q=80&w=1200",
+                image: "",
                 choices: [
                     { text: "Pick up the shovel", target: "action_get_shovel", condition: () => !gameState.flags.hasShovel },
                     { text: "Dig (Requires shovel)", target: "basement_digging", condition: () => gameState.flags.hasShovel },
@@ -417,12 +400,10 @@
                 onEnter: () => addMemoryOnce("basement_digging"),
                 choices: [{ text: "FACE THE TRUTH", target: "basement_question" }]
             },
-            
-            // --- FINAL CONFRONTATION ---
             "basement_question": {
                 name: "CORPSE",
                 text: "Before you is a mummified body. Its jaw drops open. A voice echoes in your head: 'WHO AM I?'",
-                image: "https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=1200",
+                image: "",
                 type: "input",
                 correctAnswer: "AXEL",
                 successTarget: "check_true_ending_logic",
@@ -437,12 +418,10 @@
                     if (gameState.flags.hasName) {
                         loadScene("ending_true");
                     } else {
-                        loadScene("ending_4"); // Vankila
+                        loadScene("ending_4");
                     }
                 }
             },
-
-            // --- ENDINGS ---
             "ending_1": {
                 name: "ENDING #1",
                 text: "Fear wins over curiosity. You walk away. In the nights that follow you have nightmares, but you never learn the truth.",
@@ -477,8 +456,7 @@
             }
         };
 
-        // --- PELIMOOTTORI ---
-
+        // W3Schools reference: JavaScript objects and nested data https://www.w3schools.com/js/js_objects.asp
         function loadScene(sceneId) {
             const scene = story[sceneId];
             if (!scene) return;
@@ -487,13 +465,11 @@
             let yardAdvanceHandler = null;
             let teachersAdvanceHandler = null;
 
-            // 1. Päivitä tekstit
             document.getElementById('location-name').innerText = scene.name;
             const storyText = document.getElementById('story-text');
             const shouldHideDeskText = sceneId === 'loc_desk' && !gameState.flags.deskSequencePlayed;
             storyText.innerText = shouldHideDeskText ? '' : scene.text;
 
-            // 2. Käsittele taustakuva
             const bgImg = document.getElementById('scene-bg');
             const sceneArea = document.getElementById('scene-area');
             const sceneImage =
@@ -620,12 +596,10 @@
                 bgImg.classList.add('hidden');
             }
 
-            // 3. Generoi kontrollit
             const controlsArea = document.getElementById('controls-area');
-            controlsArea.innerHTML = ''; // Tyhjennä
+            controlsArea.innerHTML = '';
 
             if (scene.type === 'input') {
-                // INPUT FIELD LOGIC
                 const container = document.createElement('div');
                 container.className = 'input-container';
                 
@@ -639,6 +613,7 @@
                 submit.innerText = "ENTER";
                 submit.onclick = () => {
                     if (input.value.toUpperCase().trim() === scene.correctAnswer) {
+                        submit.blur();
                         loadScene(scene.successTarget);
                     } else {
                         document.getElementById('story-text').innerText = scene.failText || "Väärä vastaus... mitään ei tapahdu.";
@@ -652,7 +627,6 @@
                 container.appendChild(submit);
                 controlsArea.appendChild(container);
                 
-                // Lisää myös "peruuta" napit jos on määritelty
                 if (scene.choices) {
                     const grid = document.createElement('div');
                     grid.className = 'choices-grid mt-4';
@@ -660,7 +634,10 @@
                         const btn = document.createElement('button');
                         btn.innerText = choice.text;
                         btn.className = 'choice-btn';
-                        btn.onclick = () => loadScene(choice.target);
+                        btn.onclick = () => {
+                            btn.blur();
+                            loadScene(choice.target);
+                        };
                         grid.appendChild(btn);
                     });
 
@@ -677,16 +654,14 @@
                 }
 
             } else {
-                // NORMAL BUTTON LOGIC
                 const grid = document.createElement('div');
                 grid.className = 'choices-grid';
                 const isInteractionLocked = isSceneInteractionLocked(sceneId);
 
                 if (scene.choices) {
                     scene.choices.forEach(choice => {
-                        // Tarkista ehdot (condition)
                         if (choice.condition && !choice.condition()) {
-                            return; // Älä näytä nappia jos ehto ei täyty
+                            return;
                         }
 
                         const btn = document.createElement('button');
@@ -701,6 +676,7 @@
                             !gameState.memoryScenes.loc_yard_memory
                         ) {
                             btn.onclick = () => {
+                                btn.blur();
                                 if (yardAdvanceHandler && !gameState.memoryScenes.loc_yard_memory) {
                                     yardAdvanceHandler();
                                 } else {
@@ -708,7 +684,10 @@
                                 }
                             };
                         } else {
-                            btn.onclick = () => loadScene(choice.target);
+                            btn.onclick = () => {
+                                btn.blur();
+                                loadScene(choice.target);
+                            };
                         }
                         grid.appendChild(btn);
                     });
@@ -726,7 +705,6 @@
                 controlsArea.appendChild(grid);
             }
 
-            // 4. Suorita onEnter-logiikka
             if (scene.onEnter) {
                 scene.onEnter();
             }

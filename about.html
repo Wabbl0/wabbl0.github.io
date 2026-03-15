@@ -12,15 +12,19 @@
 <body>
     <div class="scanlines"></div>
     <nav class="title-nav">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="credits.html">Credits</a>
-        <a href="contact.html">Contact</a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="credits.html">Credits</a>
+            <a href="contact.html">Contact</a>
+        </div>
     </nav>
     <main>
         <h1><a href="index.html" style="color: var(--blood-red); text-decoration: none;">AXEL</a></h1>
         <h2>A story about Guilt</h2>
         
+        <!-- W3Schools reference: Flexbox layout basics https://www.w3schools.com/css/css3_flexbox.asp -->
         <div class="content-flex-container">
             
             <div class="content-box" id="story-box">
@@ -49,5 +53,24 @@
             
         </div>
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.querySelector('.title-nav');
+            const toggle = nav?.querySelector('.nav-toggle');
+            if (!nav || !toggle) return;
+
+            toggle.addEventListener('click', () => {
+                const isOpen = nav.classList.toggle('nav-open');
+                toggle.setAttribute('aria-expanded', String(isOpen));
+            });
+
+            nav.querySelectorAll('.nav-links a').forEach((link) => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('nav-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

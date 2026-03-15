@@ -14,12 +14,16 @@
     <div class="scanlines"></div>
     
     <nav class="title-nav">
-        <a href="about.html">About</a>
-        <a href="credits.html">Credits</a>
-        <a href="contact.html">Contact</a>
+        <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">☰</button>
+        <div class="nav-links">
+            <a href="about.html">About</a>
+            <a href="credits.html">Credits</a>
+            <a href="contact.html">Contact</a>
+        </div>
     </nav>
     
     <div id="title-screen" class="title-screen">
+        <!-- W3Schools reference: Layered positioned elements https://www.w3schools.com/css/css_positioning.asp -->
         <div class="title-bg" style="background-image: url('pictures/title_v3.png');"></div>
         <div class="title-overlay"></div>
         <div class="title-content">
@@ -28,5 +32,24 @@
     </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const nav = document.querySelector('.title-nav');
+            const toggle = nav?.querySelector('.nav-toggle');
+            if (!nav || !toggle) return;
+
+            toggle.addEventListener('click', () => {
+                const isOpen = nav.classList.toggle('nav-open');
+                toggle.setAttribute('aria-expanded', String(isOpen));
+            });
+
+            nav.querySelectorAll('.nav-links a').forEach((link) => {
+                link.addEventListener('click', () => {
+                    nav.classList.remove('nav-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                });
+            });
+        });
+    </script>
 </body>
 </html>

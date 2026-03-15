@@ -1,4 +1,3 @@
-/* --- GAME STYLES --- */
 :root {
     --blood-red: #ff0000;
     --dark-blood: #4a0000;
@@ -18,7 +17,6 @@ body {
     justify-content: center;
 }
 
-/* Scanlines & CRT efektit */
 .scanlines {
     position: fixed;
     top: 0; left: 0; bottom: 0; right: 0;
@@ -41,7 +39,6 @@ body {
     background: #000;
 }
 
-/* Yläpalkki (Status) */
 .status-bar {
     display: flex;
     justify-content: space-between;
@@ -58,21 +55,23 @@ body {
     top: 6px;
     right: -34px;
     z-index: 25;
-    background: transparent;
-    border: 1px solid rgba(255, 0, 0, 0.35);
-    color: rgba(255, 120, 120, 0.8);
-    padding: 1px 7px;
+    background: rgba(20, 0, 0, 0.92);
+    border: 1px solid rgba(255, 0, 0, 0.65);
+    color: rgba(255, 180, 180, 0.95);
+    padding: 2px 8px;
     font-family: 'VT323', monospace;
-    font-size: 1rem;
+    font-size: 1.1rem;
     line-height: 1;
     cursor: pointer;
-    opacity: 0.75;
+    opacity: 0.95;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
 }
 
 .home-btn:hover {
     opacity: 1;
     color: var(--blood-red);
     border-color: var(--blood-red);
+    box-shadow: 0 0 14px rgba(255, 0, 0, 0.45);
 }
 
 .scene-area {
@@ -89,7 +88,7 @@ body {
     object-position: center;
     position: absolute;
     top: 0; left: 0;
-    opacity: 0.6; /* Hieman himmeä oletuksena */
+    opacity: 0.6;
     transition: opacity 0.35s, transform 0.2s;
     background-color: #000;
 }
@@ -109,7 +108,6 @@ body {
     75% { transform: translate(2px, 0); }
 }
 
-/* Tarinaboksi */
 .story-box {
     position: absolute;
     bottom: 0; 
@@ -135,7 +133,6 @@ body {
     text-align: center;
 }
 
-/* Kontrollit / Valinnat */
 .controls-area {
     flex: 0 0 190px;
     height: 190px;
@@ -184,17 +181,18 @@ body {
     font-size: 1.1rem;
     transition: all 0.2s;
     text-align: center;
-    -webkit-tap-highlight-color: transparent; /* remove default blue highlight on mobile */
+    -webkit-tap-highlight-color: transparent;
 }
 
-.choice-btn:hover {
-    background: var(--blood-red);
-    color: #000;
-    box-shadow: 0 0 10px var(--blood-red);
+@media (hover: hover) {
+    .choice-btn:hover {
+        background: var(--blood-red);
+        color: #000;
+        box-shadow: 0 0 10px var(--blood-red);
+    }
 }
 
 .choice-btn.choice-btn-locked,
-.choice-btn.choice-btn-locked:hover,
 .choice-btn.choice-btn-locked:focus,
 .choice-btn.choice-btn-locked:active {
     background: rgba(25, 0, 0, 0.2);
@@ -203,16 +201,31 @@ body {
     box-shadow: none;
 }
 
-/* provide feedback on touch/active state for mobile browsers */
-.choice-btn:active,
-.choice-btn:focus {
+@media (hover: hover) {
+    .choice-btn.choice-btn-locked:hover {
+        background: rgba(25, 0, 0, 0.2);
+        border-color: rgba(74, 0, 0, 0.45);
+        color: rgba(255, 0, 0, 0.35);
+        box-shadow: none;
+    }
+}
+
+.choice-btn:active {
     background: var(--blood-red);
     color: #000;
     box-shadow: 0 0 10px var(--blood-red);
     outline: none;
 }
 
-/* Input Field (Puzzleja varten) */
+@media (hover: hover) {
+    .choice-btn:focus {
+        background: var(--blood-red);
+        color: #000;
+        box-shadow: 0 0 10px var(--blood-red);
+        outline: none;
+    }
+}
+
 .input-container {
     display: flex;
     gap: 10px;
@@ -258,6 +271,16 @@ body {
 }
 
 @media (max-width: 900px) and (orientation: portrait) {
+    /* W3Schools reference: CSS media queries https://www.w3schools.com/css/css_rwd_mediaqueries.asp */
+    .home-btn {
+        top: -44px;
+        right: 8px;
+        font-size: 1.4rem;
+        padding: 4px 11px;
+        border-width: 2px;
+        background: rgba(10, 0, 0, 0.96);
+    }
+
     .choices-grid {
         max-width: 100%;
         gap: 12px;
